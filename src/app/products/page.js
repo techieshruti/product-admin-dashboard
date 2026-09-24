@@ -15,12 +15,13 @@ const ProductPage = () => {
 
   const initialSearch = searchParams.get("search") || "";
   const initialCategory = searchParams.get("category") || "";
+  const initialSort = searchParams.get("sort") || "";
 
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState(initialSearch);
   const [categories, setCategories] = useState([]);
   const [category, setCategory] = useState(initialCategory);
-  const [sort, setSort] = useState("");
+  const [sort, setSort] = useState(initialSort);
 
   const debouncedSearch = useDebounce(search, 500);
 
@@ -146,8 +147,14 @@ const ProductPage = () => {
       params.delete("category");
     }
 
+    if (sort) {
+  params.set("sort", sort);
+} else {
+  params.delete("sort");
+}
+
     router.replace(`/products?${params.toString()}`);
-  }, [page, limit, search, category]);
+  }, [page, limit, search, category, sort]);
 
   return (
     <main>
