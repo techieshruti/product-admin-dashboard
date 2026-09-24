@@ -1,13 +1,17 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { getProducts } from '@/services/productApi';
+import { getProducts, searchProducts } from "@/services/productApi";
 import { useRouter, useSearchParams } from "next/navigation";
+import useDebounce from "@/hooks/useDebounce";
 
 const ProductPage = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
 
   const [products, setProducts] = useState([]);
+  const [search, setSearch] = useState("");
+
+  const debouncedSearch = useDebounce(search, 500);
 
   const requestedPage = Number(searchParams.get("page"));
 const requestedLimit = Number(searchParams.get("limit"));
@@ -31,27 +35,41 @@ const skip = (page - 1) * limit;
   const endItem = Math.min(skip + limit, total);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-       const response = await getProducts(limit, skip);
+  const fetchProducts = async () => {
+    try {
+      let response;
 
-setProducts(response.data.products);
-setTotal(response.data.total);
-
-const calculatedTotalPages = Math.ceil(
-  response.data.total / limit
-);
-
-if (page > calculatedTotalPages) {
-  setPage(calculatedTotalPages);
-}
-      } catch (error) {
-        console.error('Failed to fetch products:', error);
+      if (debouncedSearch.trim()) {
+        response = await searchProducts(
+          debouncedSearch,
+          limit,
+          skip
+        );
+      } else {
+        response = await getProducts(limit, skip);
       }
-    };
 
-    fetchProducts();
-  }, [page, limit]);
+      setProducts(response.data.products);
+      setTotal(response.data.total);
+
+      const calculatedTotalPages = Math.ceil(
+        response.data.total / limit
+      );
+
+      if (page > calculatedTotalPages && calculatedTotalPages > 0) {
+        setPage(calculatedTotalPages);
+      }
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+    }
+  };
+
+  fetchProducts();
+}, [page, limit, debouncedSearch]);
+
+useEffect(() => {
+  setPage(1);
+}, [debouncedSearch]);
 
 useEffect(() => {
   const params = new URLSearchParams(searchParams.toString());
@@ -64,9 +82,22 @@ useEffect(() => {
 
   return (
     <main>
-      <h1>Products</h1>
       <p>Product Admin Dashboard</p>
+      <hr />
+      <br />
       <div>
+  <label htmlFor="search">Search products: </label>
+
+  <input
+    id="search"
+    type="text"
+    placeholder="Search products..."
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+  />
+</div>
+      <div>
+        <br />
   {products.map((product) => (
     <div key={product.id}>
       <img
@@ -79,6 +110,9 @@ useEffect(() => {
       <p>Price: ${product.price}</p>
       <p>Rating: {product.rating}</p>
       <p>Stock: {product.stock}</p>
+      
+<br />
+<hr />
     </div>
   ))}
 </div>
