@@ -8,6 +8,7 @@ import {
 } from "@/services/productApi";
 import { useRouter, useSearchParams } from "next/navigation";
 import useDebounce from "@/hooks/useDebounce";
+import Link from "next/link";
 
 const ProductPage = () => {
   const searchParams = useSearchParams();
@@ -22,6 +23,7 @@ const ProductPage = () => {
   const [categories, setCategories] = useState([]);
   const [category, setCategory] = useState(initialCategory);
   const [sort, setSort] = useState(initialSort);
+  const [createdProducts, setCreatedProducts] = useState([]);
 
   const debouncedSearch = useDebounce(search, 500);
 
@@ -156,6 +158,14 @@ const ProductPage = () => {
     router.replace(`/products?${params.toString()}`);
   }, [page, limit, search, category, sort]);
 
+  useEffect(() => {
+  const savedProducts = JSON.parse(
+    localStorage.getItem("createdProducts") || "[]"
+  );
+
+  setCreatedProducts(savedProducts);
+}, []);
+
   return (
     <main>
       <p>Product Admin Dashboard</p>
@@ -209,6 +219,23 @@ const ProductPage = () => {
           <option value="title-desc">Title: Z to A</option>
         </select>
       </div>
+<br />
+{createdProducts.length > 0 && (
+  <section>
+    <h2>Recently Added Products</h2>
+<br/>
+    {createdProducts.map((product) => (
+      <div key={product.id}>
+        <h3>{product.title}</h3>
+        <p>Category: {product.category}</p>
+        <p>Price: ${product.price}</p>
+        <p>Stock: {product.stock}</p>
+      </div>
+    ))}
+  </section>
+)}
+
+<br />
       <div>
         <br />
         {products.map((product) => (

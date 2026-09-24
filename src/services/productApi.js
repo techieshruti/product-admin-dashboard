@@ -11,6 +11,8 @@ export const getProducts = (
   );
 };
 
+// =============================================
+
 export const searchProducts = (
   query,
   limit = 10,
@@ -25,9 +27,13 @@ export const searchProducts = (
   );
 };
 
+// =============================================
+
 export const getCategories = () => {
   return api.get("/products/categories");
 };
+
+// =============================================
 
 export const getProductsByCategory = (
   category,
@@ -39,4 +45,22 @@ export const getProductsByCategory = (
   return api.get(
     `/products/category/${encodeURIComponent(category)}?limit=${limit}&skip=${skip}&sortBy=${sortBy}&order=${order}`
   );
+};
+
+// ============================================
+
+export const getProductById = (id) => {
+  return api.get(`/products/${id}`);
+};
+
+// ============================================
+
+export const addProduct = (productData) => {
+  return api.post("/products/add", productData);
+};
+
+// ===========================================
+
+export const updateProduct = (id, productData) => {
+  return api.put(`/products/${id}`, productData);
 };
