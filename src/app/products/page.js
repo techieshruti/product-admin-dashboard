@@ -1,11 +1,29 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { getProducts } from '@/services/productApi';
+import { useRouter, useSearchParams } from "next/navigation";
 
 const ProductPage = () => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
   const [products, setProducts] = useState([]);
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+
+  const requestedPage = Number(searchParams.get("page"));
+const requestedLimit = Number(searchParams.get("limit"));
+
+const initialPage =
+  Number.isInteger(requestedPage) && requestedPage > 0
+    ? requestedPage
+    : 1;
+
+const initialLimit =
+  [10, 20, 50].includes(requestedLimit)
+    ? requestedLimit
+    : 10;
+
+  const [page, setPage] = useState(initialPage);
+  const [limit, setLimit] = useState(initialLimit);
   const [total, setTotal] = useState(0);
 const skip = (page - 1) * limit;
   const totalPages = Math.ceil(total / limit);
@@ -15,9 +33,18 @@ const skip = (page - 1) * limit;
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await getProducts(limit, skip);
-        setProducts(response.data.products);
-        setTotal(response.data.total);
+       const response = await getProducts(limit, skip);
+
+setProducts(response.data.products);
+setTotal(response.data.total);
+
+const calculatedTotalPages = Math.ceil(
+  response.data.total / limit
+);
+
+if (page > calculatedTotalPages) {
+  setPage(calculatedTotalPages);
+}
       } catch (error) {
         console.error('Failed to fetch products:', error);
       }
@@ -25,6 +52,15 @@ const skip = (page - 1) * limit;
 
     fetchProducts();
   }, [page, limit]);
+
+useEffect(() => {
+  const params = new URLSearchParams(searchParams.toString());
+
+  params.set("page", page);
+  params.set("limit", limit);
+
+  router.replace(`/products?${params.toString()}`);
+}, [page, limit]);
 
   return (
     <main>
