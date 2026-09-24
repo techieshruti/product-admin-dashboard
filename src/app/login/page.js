@@ -1,10 +1,12 @@
 "use client"
 import { useState } from 'react';
 import api from "@/lib/axios";
+import {useRouter} from "next/navigation";
 
 const LoginPage = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const router = useRouter();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -12,6 +14,7 @@ const LoginPage = () => {
         const response = await api.post('auth/login', { username, password });
         localStorage.setItem('accessToken', response.data.accessToken);
         console.log('Login successful:', response.data);
+        router.push('/products');
       } catch (error) {
         console.log('Login failed:', error);
       }
