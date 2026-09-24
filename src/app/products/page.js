@@ -8,8 +8,10 @@ const ProductPage = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
 
+const initialSearch = searchParams.get("search") || "";
+
   const [products, setProducts] = useState([]);
-  const [search, setSearch] = useState("");
+const [search, setSearch] = useState(initialSearch);
 
   const debouncedSearch = useDebounce(search, 500);
 
@@ -34,7 +36,9 @@ const skip = (page - 1) * limit;
   const startItem = total === 0 ? 0 : skip + 1;
   const endItem = Math.min(skip + limit, total);
 
-  useEffect(() => {
+useEffect(() => {
+  const controller = new AbortController();
+
   const fetchProducts = async () => {
     try {
       let response;
@@ -43,7 +47,8 @@ const skip = (page - 1) * limit;
         response = await searchProducts(
           debouncedSearch,
           limit,
-          skip
+          skip,
+          controller.signal
         );
       } else {
         response = await getProducts(limit, skip);
@@ -60,11 +65,21 @@ const skip = (page - 1) * limit;
         setPage(calculatedTotalPages);
       }
     } catch (error) {
+      // Ignore requests that were intentionally cancelled
+      if (error.code === "ERR_CANCELED") {
+        return;
+      }
+
       console.error("Failed to fetch products:", error);
     }
   };
 
   fetchProducts();
+
+  // Cancel the previous request when search/page/limit changes
+  return () => {
+    controller.abort();
+  };
 }, [page, limit, debouncedSearch]);
 
 useEffect(() => {
@@ -77,8 +92,14 @@ useEffect(() => {
   params.set("page", page);
   params.set("limit", limit);
 
+  if (search.trim()) {
+    params.set("search", search.trim());
+  } else {
+    params.delete("search");
+  }
+
   router.replace(`/products?${params.toString()}`);
-}, [page, limit]);
+}, [page, limit, search]);
 
   return (
     <main>
