@@ -19,7 +19,8 @@ const ProductPage = () => {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState(initialSearch);
   const [categories, setCategories] = useState([]);
-const [category, setCategory] = useState(initialCategory);
+  const [category, setCategory] = useState(initialCategory);
+  const [sort, setSort] = useState("");
 
   const debouncedSearch = useDebounce(search, 500);
 
@@ -47,23 +48,34 @@ const [category, setCategory] = useState(initialCategory);
     const fetchProducts = async () => {
       try {
         let response;
+        let sortBy = "";
+        let order = "";
+
+        if (sort) {
+          const [field, direction] = sort.split("-");
+
+          sortBy = field;
+          order = direction;
+        }
 
         if (category) {
-  response = await getProductsByCategory(
-    category,
-    limit,
-    skip
-  );
-} else if (debouncedSearch.trim()) {
-  response = await searchProducts(
-    debouncedSearch,
-    limit,
-    skip,
-    controller.signal
-  );
-} else {
-  response = await getProducts(limit, skip);
-}
+          response = await getProductsByCategory(
+            category,
+            limit,
+            skip,
+            sortBy,
+            order,
+          );
+        } else if (debouncedSearch.trim()) {
+          response = await searchProducts(
+            debouncedSearch,
+            limit,
+            skip,
+            controller.signal,
+          );
+        } else {
+          response = await getProducts(limit, skip, sortBy, order);
+        }
 
         setProducts(response.data.products);
         setTotal(response.data.total);
@@ -89,54 +101,53 @@ const [category, setCategory] = useState(initialCategory);
     return () => {
       controller.abort();
     };
-  }, [page, limit, debouncedSearch, category]);
-
-useEffect(() => {
-  if (category) {
-    setSearch("");
-    setPage(1);
-  }
-}, [category]);
+  }, [page, limit, debouncedSearch, category, sort]);
 
   useEffect(() => {
-  const fetchCategories = async () => {
-    try {
-      const response = await getCategories();
-      setCategories(response.data);
-      console.log("Categories:", response.data);
-    } catch (error) {
-      console.error("Failed to fetch categories:", error);
+    if (category) {
+      setSearch("");
+      setPage(1);
     }
-  };
+  }, [category]);
 
-  fetchCategories();
-}, []);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await getCategories();
+        setCategories(response.data);
+        console.log("Categories:", response.data);
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      }
+    };
 
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     setPage(1);
   }, [debouncedSearch]);
 
   useEffect(() => {
-  const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams.toString());
 
-  params.set("page", page);
-  params.set("limit", limit);
+    params.set("page", page);
+    params.set("limit", limit);
 
-  if (search.trim()) {
-    params.set("search", search.trim());
-  } else {
-    params.delete("search");
-  }
+    if (search.trim()) {
+      params.set("search", search.trim());
+    } else {
+      params.delete("search");
+    }
 
-  if (category) {
-    params.set("category", category);
-  } else {
-    params.delete("category");
-  }
+    if (category) {
+      params.set("category", category);
+    } else {
+      params.delete("category");
+    }
 
-  router.replace(`/products?${params.toString()}`);
-}, [page, limit, search, category]);
+    router.replace(`/products?${params.toString()}`);
+  }, [page, limit, search, category]);
 
   return (
     <main>
@@ -157,22 +168,40 @@ useEffect(() => {
       </div>
       {/* Categories: */}
       <div>
-  <label htmlFor="category">Category: </label>
+        <label htmlFor="category">Category: </label>
 
-  <select
-    id="category"
-    value={category}
-    onChange={(e) => setCategory(e.target.value)}
-  >
-    <option value="">All Categories</option>
+        <select
+          id="category"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+        >
+          <option value="">All Categories</option>
 
-    {categories.map((item) => (
-      <option key={item.slug} value={item.slug}>
-        {item.name}
-      </option>
-    ))}
-  </select>
-</div>
+          {categories.map((item) => (
+            <option key={item.slug} value={item.slug}>
+              {item.name}
+            </option>
+          ))}
+        </select>
+      </div>
+      {/* Sort */}
+      <div>
+        <label htmlFor="sort">Sort by: </label>
+
+        <select
+          id="sort"
+          value={sort}
+          onChange={(e) => setSort(e.target.value)}
+        >
+          <option value="">Default</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="rating-asc">Rating: Low to High</option>
+          <option value="rating-desc">Rating: High to Low</option>
+          <option value="title-asc">Title: A to Z</option>
+          <option value="title-desc">Title: Z to A</option>
+        </select>
+      </div>
       <div>
         <br />
         {products.map((product) => (

@@ -1,7 +1,14 @@
 import api from "@/lib/axios";
 
-export const getProducts = (limit = 10, skip = 0) => {
-  return api.get(`/products?limit=${limit}&skip=${skip}`);
+export const getProducts = (
+  limit = 10,
+  skip = 0,
+  sortBy = "",
+  order = ""
+) => {
+  return api.get(
+    `/products?limit=${limit}&skip=${skip}&sortBy=${sortBy}&order=${order}`
+  );
 };
 
 export const searchProducts = (
@@ -25,9 +32,11 @@ export const getCategories = () => {
 export const getProductsByCategory = (
   category,
   limit = 10,
-  skip = 0
+  skip = 0,
+  sortBy = "",
+  order = ""
 ) => {
   return api.get(
-    `/products/category/${encodeURIComponent(category)}?limit=${limit}&skip=${skip}`
+    `/products/category/${encodeURIComponent(category)}?limit=${limit}&skip=${skip}&sortBy=${sortBy}&order=${order}`
   );
 };
