@@ -17,3 +17,17 @@ export const searchProducts = (
     }
   );
 };
+
+export const getCategories = () => {
+  return api.get("/products/categories");
+};
+
+export const getProductsByCategory = (
+  category,
+  limit = 10,
+  skip = 0
+) => {
+  return api.get(
+    `/products/category/${encodeURIComponent(category)}?limit=${limit}&skip=${skip}`
+  );
+};

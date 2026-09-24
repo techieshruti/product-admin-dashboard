@@ -1,6 +1,11 @@
 "use client";
-import { useEffect, useState } from 'react';
-import { getProducts, searchProducts } from "@/services/productApi";
+import { useEffect, useState } from "react";
+import {
+  getProducts,
+  searchProducts,
+  getCategories,
+  getProductsByCategory,
+} from "@/services/productApi";
 import { useRouter, useSearchParams } from "next/navigation";
 import useDebounce from "@/hooks/useDebounce";
 
@@ -8,85 +13,111 @@ const ProductPage = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-const initialSearch = searchParams.get("search") || "";
+  const initialSearch = searchParams.get("search") || "";
+  const initialCategory = searchParams.get("category") || "";
 
   const [products, setProducts] = useState([]);
-const [search, setSearch] = useState(initialSearch);
+  const [search, setSearch] = useState(initialSearch);
+  const [categories, setCategories] = useState([]);
+const [category, setCategory] = useState(initialCategory);
 
   const debouncedSearch = useDebounce(search, 500);
 
   const requestedPage = Number(searchParams.get("page"));
-const requestedLimit = Number(searchParams.get("limit"));
+  const requestedLimit = Number(searchParams.get("limit"));
 
-const initialPage =
-  Number.isInteger(requestedPage) && requestedPage > 0
-    ? requestedPage
-    : 1;
+  const initialPage =
+    Number.isInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
 
-const initialLimit =
-  [10, 20, 50].includes(requestedLimit)
+  const initialLimit = [10, 20, 50].includes(requestedLimit)
     ? requestedLimit
     : 10;
 
   const [page, setPage] = useState(initialPage);
   const [limit, setLimit] = useState(initialLimit);
   const [total, setTotal] = useState(0);
-const skip = (page - 1) * limit;
+  const skip = (page - 1) * limit;
   const totalPages = Math.ceil(total / limit);
   const startItem = total === 0 ? 0 : skip + 1;
   const endItem = Math.min(skip + limit, total);
 
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const fetchProducts = async () => {
+      try {
+        let response;
+
+        if (category) {
+  response = await getProductsByCategory(
+    category,
+    limit,
+    skip
+  );
+} else if (debouncedSearch.trim()) {
+  response = await searchProducts(
+    debouncedSearch,
+    limit,
+    skip,
+    controller.signal
+  );
+} else {
+  response = await getProducts(limit, skip);
+}
+
+        setProducts(response.data.products);
+        setTotal(response.data.total);
+
+        const calculatedTotalPages = Math.ceil(response.data.total / limit);
+
+        if (page > calculatedTotalPages && calculatedTotalPages > 0) {
+          setPage(calculatedTotalPages);
+        }
+      } catch (error) {
+        // Ignore requests that were intentionally cancelled
+        if (error.code === "ERR_CANCELED") {
+          return;
+        }
+
+        console.error("Failed to fetch products:", error);
+      }
+    };
+
+    fetchProducts();
+
+    // Cancel the previous request when search/page/limit changes
+    return () => {
+      controller.abort();
+    };
+  }, [page, limit, debouncedSearch, category]);
+
 useEffect(() => {
-  const controller = new AbortController();
+  if (category) {
+    setSearch("");
+    setPage(1);
+  }
+}, [category]);
 
-  const fetchProducts = async () => {
+  useEffect(() => {
+  const fetchCategories = async () => {
     try {
-      let response;
-
-      if (debouncedSearch.trim()) {
-        response = await searchProducts(
-          debouncedSearch,
-          limit,
-          skip,
-          controller.signal
-        );
-      } else {
-        response = await getProducts(limit, skip);
-      }
-
-      setProducts(response.data.products);
-      setTotal(response.data.total);
-
-      const calculatedTotalPages = Math.ceil(
-        response.data.total / limit
-      );
-
-      if (page > calculatedTotalPages && calculatedTotalPages > 0) {
-        setPage(calculatedTotalPages);
-      }
+      const response = await getCategories();
+      setCategories(response.data);
+      console.log("Categories:", response.data);
     } catch (error) {
-      // Ignore requests that were intentionally cancelled
-      if (error.code === "ERR_CANCELED") {
-        return;
-      }
-
-      console.error("Failed to fetch products:", error);
+      console.error("Failed to fetch categories:", error);
     }
   };
 
-  fetchProducts();
+  fetchCategories();
+}, []);
 
-  // Cancel the previous request when search/page/limit changes
-  return () => {
-    controller.abort();
-  };
-}, [page, limit, debouncedSearch]);
 
-useEffect(() => {
-  setPage(1);
-}, [debouncedSearch]);
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch]);
 
-useEffect(() => {
+  useEffect(() => {
   const params = new URLSearchParams(searchParams.toString());
 
   params.set("page", page);
@@ -98,67 +129,88 @@ useEffect(() => {
     params.delete("search");
   }
 
+  if (category) {
+    params.set("category", category);
+  } else {
+    params.delete("category");
+  }
+
   router.replace(`/products?${params.toString()}`);
-}, [page, limit, search]);
+}, [page, limit, search, category]);
 
   return (
     <main>
       <p>Product Admin Dashboard</p>
       <hr />
       <br />
+      {/* Search products: */}
       <div>
-  <label htmlFor="search">Search products: </label>
+        <label htmlFor="search">Search products: </label>
 
-  <input
-    id="search"
-    type="text"
-    placeholder="Search products..."
-    value={search}
-    onChange={(e) => setSearch(e.target.value)}
-  />
+        <input
+          id="search"
+          type="text"
+          placeholder="Search products..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
+      {/* Categories: */}
+      <div>
+  <label htmlFor="category">Category: </label>
+
+  <select
+    id="category"
+    value={category}
+    onChange={(e) => setCategory(e.target.value)}
+  >
+    <option value="">All Categories</option>
+
+    {categories.map((item) => (
+      <option key={item.slug} value={item.slug}>
+        {item.name}
+      </option>
+    ))}
+  </select>
 </div>
       <div>
         <br />
-  {products.map((product) => (
-    <div key={product.id}>
-      <img
-        src={product.thumbnail}
-        alt={product.title}
-        width="100"
-      />
-      <h2>{product.title}</h2>
-      <p>Category: {product.category}</p>
-      <p>Price: ${product.price}</p>
-      <p>Rating: {product.rating}</p>
-      <p>Stock: {product.stock}</p>
-      
-<br />
-<hr />
-    </div>
-  ))}
-</div>
-<p>
-  Showing {startItem}–{endItem} of {total}
-</p>
-<div>
-  <button
-    onClick={() => setPage(page - 1)}
-    disabled={page === 1}
-  >
-    Previous
-  </button>
+        {products.map((product) => (
+          <div key={product.id}>
+            <img src={product.thumbnail} alt={product.title} width="100" />
+            <h2>{product.title}</h2>
+            <p>Category: {product.category}</p>
+            <p>Price: ${product.price}</p>
+            <p>Rating: {product.rating}</p>
+            <p>Stock: {product.stock}</p>
 
-  <span> Page {page} of {totalPages} </span>
+            <br />
+            <hr />
+          </div>
+        ))}
+      </div>
+      <p>
+        Showing {startItem}–{endItem} of {total}
+      </p>
+      <div>
+        <button onClick={() => setPage(page - 1)} disabled={page === 1}>
+          Previous
+        </button>
 
-  <button
-    onClick={() => setPage(page + 1)}
-    disabled={page === totalPages}
-  >
-    Next
-  </button>
-</div>
+        <span>
+          {" "}
+          Page {page} of {totalPages}{" "}
+        </span>
 
- <div>
+        <button
+          onClick={() => setPage(page + 1)}
+          disabled={page === totalPages}
+        >
+          Next
+        </button>
+      </div>
+
+      <div>
         <label htmlFor="pageSize">Products per page: </label>
 
         <select
@@ -178,4 +230,4 @@ useEffect(() => {
   );
 };
 
-export default ProductPage
+export default ProductPage;
