@@ -23,7 +23,7 @@ const RecentlyAddedProducts = ({ createdProducts, handleDeleteClick }) => {
         {createdProducts.map((product) => (
           <div
             key={product.id}
-            className="group rounded-xl border border-indigo-100 bg-gradient-to-br from-indigo-50/70 via-white to-violet-50/70 p-5 shadow-sm transition duration-200 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-100/50"
+            className="group rounded-xl border border-indigo-100 bg-linear-to-br from-indigo-50/70 via-white to-violet-50/70 p-5 shadow-sm transition duration-200 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-100/50"
           >
             <div className="mb-4 flex items-start justify-between gap-3">
               <h3 className="text-lg font-bold text-gray-900">

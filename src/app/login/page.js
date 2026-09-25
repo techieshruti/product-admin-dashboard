@@ -32,10 +32,10 @@ const LoginPage = () => {
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-violet-50 px-4 py-8">
-      <div className="w-full max-w-md rounded-2xl border border-indigo-200 bg-gradient-to-br from-indigo-50 via-white to-violet-50 p-8 shadow-xl shadow-indigo-200/40">
+    <main className="flex min-h-screen items-center justify-center bg-linear-to-br from-indigo-50 via-white to-violet-50 px-4 py-8">
+      <div className="w-full max-w-md rounded-2xl border border-indigo-200 bg-linear-to-br from-indigo-50 via-white to-violet-50 p-8 shadow-xl shadow-indigo-200/40">
         <div className="mb-8 text-center">
-          <h1 className="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-3xl font-bold text-transparent">
+          <h1 className="bg-linear-to-r from-indigo-600 to-violet-600 bg-clip-text text-3xl font-bold text-transparent">
             Welcome Back
           </h1>
 

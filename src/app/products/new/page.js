@@ -135,7 +135,7 @@ const NewProductPage = () => {
 
         {/* Page Header */}
         <div className="mb-7">
-          <h1 className="mt-1 bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-3xl font-bold text-transparent md:text-4xl">
+          <h1 className="mt-1 bg-linear-to-r from-indigo-600 to-violet-600 bg-clip-text text-3xl font-bold text-transparent md:text-4xl">
             Add New Product
           </h1>
 

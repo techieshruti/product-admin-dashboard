@@ -11,7 +11,7 @@ const ProductForm = ({
   return (
     <form
       onSubmit={onSubmit}
-      className="max-w-2xl space-y-6 rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50 via-white to-violet-50 p-6 shadow-lg shadow-indigo-100/40 md:p-8"
+      className="max-w-2xl space-y-6 rounded-2xl border border-indigo-100 bg-linear-to-br from-indigo-50 via-white to-violet-50 p-6 shadow-lg shadow-indigo-100/40 md:p-8"
     >
       {/* Form heading */}
       <div className="border-b border-indigo-100 pb-5">

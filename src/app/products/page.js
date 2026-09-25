@@ -303,13 +303,13 @@ useEffect(() => {
   return (
     <main className="min-h-screen bg-gray-50 p-4 md:p-8">
       <div className="mx-auto max-w-7xl">
-      <header className="mb-8 flex flex-col gap-5 rounded-2xl border border-indigo-100 bg-gradient-to-r from-indigo-50 via-white to-violet-50 p-6 shadow-lg shadow-indigo-100/40 sm:flex-row sm:items-center sm:justify-between">
+      <header className="mb-8 flex flex-col gap-5 rounded-2xl border border-indigo-100 bg-linear-to-r from-indigo-50 via-white to-violet-50 p-6 shadow-lg shadow-indigo-100/40 sm:flex-row sm:items-center sm:justify-between">
   <div>
     <p className="mb-1 text-sm font-semibold uppercase tracking-wider text-gray-600">
       Admin Panel
     </p>
 
-    <h1 className="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-2xl font-bold text-transparent md:text-3xl">
+    <h1 className="bg-linear-to-r from-indigo-600 to-violet-600 bg-clip-text text-2xl font-bold text-transparent md:text-3xl">
       Product Admin Dashboard
     </h1>
 
@@ -357,7 +357,7 @@ useEffect(() => {
       <div>
 
       {loading ? (
-  <div className="my-8 flex min-h-[220px] items-center justify-center rounded-2xl border border-indigo-100 bg-white shadow-sm">
+  <div className="my-8 flex min-h-55 items-center justify-center rounded-2xl border border-indigo-100 bg-white shadow-sm">
     <div className="flex flex-col items-center justify-center text-center">
       <div className="h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-indigo-600"></div>
 
@@ -371,7 +371,7 @@ useEffect(() => {
     </div>
   </div>
 ) : error ? (
-  <div className="my-8 flex min-h-[220px] items-center justify-center rounded-2xl border border-rose-200 bg-white p-6 shadow-sm">
+  <div className="my-8 flex min-h-55 items-center justify-center rounded-2xl border border-rose-200 bg-white p-6 shadow-sm">
     <div className="flex max-w-md flex-col items-center text-center">
 
       <div className="flex h-12 w-12 items-center justify-center rounded-full bg-rose-100">
@@ -398,7 +398,7 @@ useEffect(() => {
     </div>
   </div>
 ) : products.length === 0 ? (
-  <div className="my-8 flex min-h-[220px] items-center justify-center rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+  <div className="my-8 flex min-h-55 items-center justify-center rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
     <div className="flex max-w-md flex-col items-center text-center">
 
       <div className="flex h-12 w-12 items-center justify-center rounded-full bg-indigo-50">

@@ -132,7 +132,7 @@ const ProductDetailsPage = ({ params }) => {
         </Link>
 
         {/* Product Details Card */}
-        <section className="overflow-hidden rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50 via-white to-violet-50 shadow-lg shadow-indigo-100/40">
+        <section className="overflow-hidden rounded-2xl border border-indigo-100 bg-linear-to-br from-indigo-50 via-white to-violet-50 shadow-lg shadow-indigo-100/40">
           <div className="grid gap-8 p-6 md:grid-cols-2 md:p-8">
             {/* Product Images */}
             <div>
@@ -176,7 +176,7 @@ const ProductDetailsPage = ({ params }) => {
                 {product.category}
               </span>
 
-              <h1 className="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-3xl font-bold text-transparent md:text-4xl">
+              <h1 className="bg-linear-to-r from-indigo-600 to-violet-600 bg-clip-text text-3xl font-bold text-transparent md:text-4xl">
                 {product.title}
               </h1>
 
@@ -246,7 +246,7 @@ const ProductDetailsPage = ({ params }) => {
               {product.reviews.map((review, index) => (
                 <div
                   key={index}
-                  className="rounded-xl border border-gray-200 bg-gradient-to-r from-gray-50 to-white p-5 transition hover:border-indigo-100 hover:shadow-sm"
+                  className="rounded-xl border border-gray-200 bg-linear-to-r from-gray-50 to-white p-5 transition hover:border-indigo-100 hover:shadow-sm"
                 >
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div>

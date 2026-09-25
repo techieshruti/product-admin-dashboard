@@ -5,7 +5,7 @@ const ProductTable = ({ products, handleDeleteClick }) => {
     <div className="hidden overflow-hidden rounded-xl border border-indigo-100 bg-white shadow-sm md:block">
       <table className="w-full border-collapse">
         <thead>
-          <tr className="bg-gradient-to-r from-indigo-50 to-violet-50 text-gray-800">
+          <tr className="bg-linear-to-r from-indigo-50 to-violet-50 text-gray-800">
             <th className="border-b border-indigo-100 p-4 text-left text-sm font-semibold">
               Image
             </th>
