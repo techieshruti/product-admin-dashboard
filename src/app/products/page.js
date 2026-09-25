@@ -29,6 +29,11 @@ const ProductPage = () => {
   const [createdProducts, setCreatedProducts] = useState([]);
   const [productToDelete, setProductToDelete] = useState(null);
 
+const handleLogout = () => {
+  localStorage.removeItem("accessToken");
+  router.replace("/login");
+};
+
 const handleDeleteClick = (product) => {
   setProductToDelete(product);
 };
@@ -250,6 +255,9 @@ if (!isAuthenticated) {
 
   return (
     <main>
+      <button type="button" onClick={handleLogout}>
+  Logout
+</button>
       <p>Product Admin Dashboard</p>
       <hr />
       <br />
