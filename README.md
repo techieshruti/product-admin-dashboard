@@ -6,7 +6,7 @@ The application allows authenticated users to view, search, filter, sort, add, e
 
 ## 🚀 Live Demo
 
-Add your deployed Vercel/Netlify URL here.
+[Live Demo](https://product-admin-dashboard-ruddy-chi.vercel.app)
 
 ## 📂 GitHub Repository
 
@@ -26,6 +26,46 @@ Add your deployed Vercel/Netlify URL here.
 - Git & GitHub
 
 ---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+Make sure you have the following installed:
+
+- Node.js
+- npm
+- Git
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/techieshruti/product-admin-dashboard.git
+```
+
+2. Navigate to the project directory:
+
+```bash
+cd product-admin-dashboard
+```
+
+3. Install dependencies:
+
+```bash
+npm install
+```
+
+4. Start the development server:
+```bash
+npm run dev
+```
+
+5. Open the application in your browser:
+```bash
+http://localhost:3000
+```
 
 ## ✨ Features
 
@@ -213,5 +253,3 @@ src/
 │
 └── services/
     └── productApi.js
-
-```text
