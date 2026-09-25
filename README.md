@@ -144,6 +144,33 @@ Use the following credentials to access the dashboard:
 ```text
 Username: emilys
 Password: emilyspass
+```
+
+## ⚙️ Technical Implementation
+
+### Axios Configuration
+
+A shared Axios instance is used for API communication. An interceptor automatically adds the stored authentication token to API requests.
+
+### Search & Race Condition Handling
+
+Search uses debouncing to reduce unnecessary API requests. `AbortController` cancels outdated requests so older results cannot replace newer search results.
+
+### URL State
+
+Page, page size, search, category, and sorting state are stored in the URL. Invalid values are handled safely without breaking the application.
+
+### Search & Category Behavior
+
+DummyJSON does not support combining search and category filtering in a single request, so the application handles them as separate API behaviors.
+
+### Mutation Handling
+
+DummyJSON mutations are simulated and are not permanently persisted. LocalStorage is used where necessary to keep added and updated products visible during the session.
+
+### Responsive Design
+
+The dashboard uses a responsive table on desktop and product cards on mobile. Product details and forms are also optimized for smaller screens.
 
 ## 📁 Project Structure
 
@@ -185,5 +212,6 @@ src/
 │   └── axios.js
 │
 └── services/
-    ├── authApi.js
     └── productApi.js
+
+```text
