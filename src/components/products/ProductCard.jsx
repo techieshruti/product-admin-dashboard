@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const ProductCard = ({ product, handleDeleteClick }) => {
   return (
-    <div className="rounded-lg border border-gray-300 p-4 shadow-sm">
+    <div className="rounded-lg border border-gray-300 p-4 shadow-sm text-black">
       <img
         src={product.thumbnail}
         alt={product.title}

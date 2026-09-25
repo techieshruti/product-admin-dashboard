@@ -275,31 +275,47 @@ const ProductPage = () => {
   }
 
   return (
-    <main>
-      <button type="button" onClick={handleLogout}>
-        Logout
-      </button>
-      <p>Product Admin Dashboard</p>
-      <hr />
-      <br />
-      <ProductFilters
-  search={search}
-  setSearch={setSearch}
-  category={category}
-  setCategory={setCategory}
-  categories={categories}
-  sort={sort}
-  setSort={setSort}
-/>
-      <br />
-      <RecentlyAddedProducts
-  createdProducts={createdProducts}
-  handleDeleteClick={handleDeleteClick}
-/>
+    <main className="min-h-screen bg-gray-50 p-4 md:p-8">
+      <div className="mx-auto max-w-7xl">
+      <header className="mb-8 flex flex-col gap-4 rounded-xl bg-white p-6 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 md:text-3xl">
+            Product Admin Dashboard
+          </h1>
 
-      <br />
+          <p className="mt-1 text-sm text-gray-500">
+            Manage your products, inventory, and pricing.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="rounded-md bg-gray-900 px-4 py-2 font-medium text-white transition hover:bg-gray-700"
+        >
+          Logout
+        </button>
+      </header>
+
+      {/* Product Filters */}
+      <div className="mb-8 rounded-xl border border-gray-200 bg-white p-5 shadow-sm text-black text-lg">
+  <ProductFilters
+    search={search}
+    setSearch={setSearch}
+    category={category}
+    setCategory={setCategory}
+    categories={categories}
+    sort={sort}
+    setSort={setSort}
+  />
+</div>
+
+{/* Recently Added Products */}
+      <RecentlyAddedProducts
+        createdProducts={createdProducts}
+        handleDeleteClick={handleDeleteClick}
+      />
       <div>
-        <br />
 
         {loading ? (
           <p>Loading products...</p>
@@ -320,42 +336,43 @@ const ProductPage = () => {
           <div>
             {/* Desktop: Table */}
             <ProductTable
-  products={products}
-  handleDeleteClick={handleDeleteClick}
-/>
+              products={products}
+              handleDeleteClick={handleDeleteClick}
+            />
 
             {/* Mobile: Cards */}
             <div className="space-y-4 md:hidden">
-  {products.map((product) => (
-    <ProductCard
-      key={product.id}
-      product={product}
-      handleDeleteClick={handleDeleteClick}
-    />
-  ))}
-</div>
+              {products.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  handleDeleteClick={handleDeleteClick}
+                />
+              ))}
+            </div>
           </div>
         )}
       </div>
 
-     {/* Pagination */}
+      {/* Pagination */}
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        limit={limit}
+        startItem={startItem}
+        endItem={endItem}
+        total={total}
+        setPage={setPage}
+        setLimit={setLimit}
+      />
 
-     <Pagination
-  page={page}
-  totalPages={totalPages}
-  limit={limit}
-  startItem={startItem}
-  endItem={endItem}
-  total={total}
-  setPage={setPage}
-  setLimit={setLimit}
-/>
-{/* Delete Modal */}
-     <DeleteModal
-  product={productToDelete}
-  onCancel={() => setProductToDelete(null)}
-  onConfirm={handleConfirmDelete}
-/>
+      {/* Delete Modal */}
+      <DeleteModal
+        product={productToDelete}
+        onCancel={() => setProductToDelete(null)}
+        onConfirm={handleConfirmDelete}
+      />
+      </div>
     </main>
   );
 };

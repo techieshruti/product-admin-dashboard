@@ -3,7 +3,7 @@ const ProductTable = ({ products, handleDeleteClick }) => {
     <div className="hidden md:block">
       <table className="w-full border-collapse border border-gray-300">
         <thead>
-          <tr className="bg-gray-100">
+          <tr className="bg-gray-100 text-black">
             <th className="border border-gray-300 p-3 text-left">
               Image
             </th>
@@ -48,19 +48,19 @@ const ProductTable = ({ products, handleDeleteClick }) => {
                 </a>
               </td>
 
-              <td className="border border-gray-300 p-3">
+              <td className="border border-gray-300 text-black p-3">
                 {product.category}
               </td>
 
-              <td className="border border-gray-300 p-3">
+              <td className="border border-gray-300 p-3 text-black">
                 ${product.price}
               </td>
 
-              <td className="border border-gray-300 p-3">
+              <td className="border border-gray-300 p-3 text-black">
                 {product.rating}
               </td>
 
-              <td className="border border-gray-300 p-3">
+              <td className="border border-gray-300 p-3 text-black">
                 {product.stock}
               </td>
 
@@ -68,7 +68,7 @@ const ProductTable = ({ products, handleDeleteClick }) => {
                 <button
                   type="button"
                   onClick={() => handleDeleteClick(product)}
-                  className="rounded bg-red-500 px-3 py-1 text-white"
+                  className="rounded bg-red-600 px-3 py-1 text-white cursor-pointer hover:bg-red-700"
                 >
                   Delete
                 </button>

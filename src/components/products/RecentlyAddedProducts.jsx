@@ -9,8 +9,8 @@ const RecentlyAddedProducts = ({
   }
 
   return (
-    <section className="mt-8">
-      <h2 className="mb-4 text-2xl font-bold">
+    <section className="my-8">
+      <h2 className="mb-4 text-2xl text-black font-bold">
         Recently Added Products
       </h2>
 
@@ -44,7 +44,7 @@ const RecentlyAddedProducts = ({
             <button
               type="button"
               onClick={() => handleDeleteClick(product)}
-              className="mt-4 rounded bg-red-500 px-3 py-1 text-sm text-white hover:bg-red-600"
+              className="mt-4 rounded bg-red-600 px-3 py-1 text-sm text-white hover:bg-red-700"
             >
               Delete
             </button>

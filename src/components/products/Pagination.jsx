@@ -10,16 +10,16 @@ const Pagination = ({
 }) => {
   return (
     <div className="mt-6">
-      <p className="mb-3">
+      <p className="mb-3 text-black">
         Showing {startItem}–{endItem} of {total}
       </p>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 text-black">
         <button
           type="button"
           onClick={() => setPage(page - 1)}
           disabled={page === 1}
-          className="rounded border px-3 py-2 disabled:opacity-50"
+          className="rounded border px-3 py-2 disabled:opacity-50 cursor-pointer"
         >
           Previous
         </button>
@@ -32,14 +32,14 @@ const Pagination = ({
           type="button"
           onClick={() => setPage(page + 1)}
           disabled={page === totalPages}
-          className="rounded border px-3 py-2 disabled:opacity-50"
+          className="rounded border px-3 py-2 disabled:opacity-50 cursor-pointer"
         >
           Next
         </button>
       </div>
 
       <div className="mt-4">
-        <label htmlFor="pageSize" className="mr-2">
+        <label htmlFor="pageSize" className="mr-2 text-black">
           Products per page:
         </label>
 
@@ -50,7 +50,7 @@ const Pagination = ({
             setLimit(Number(e.target.value));
             setPage(1);
           }}
-          className="rounded border px-3 py-2"
+          className="rounded border px-3 py-2 text-black cursor-pointer"
         >
           <option value="10">10</option>
           <option value="20">20</option>
