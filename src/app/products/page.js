@@ -9,9 +9,11 @@ import {
 } from "@/services/productApi";
 import { useRouter, useSearchParams } from "next/navigation";
 import useDebounce from "@/hooks/useDebounce";
+import useAuth from "@/hooks/useAuth";
 import Link from "next/link";
 
 const ProductPage = () => {
+  const { isAuthenticated, checkingAuth } = useAuth();
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -112,6 +114,9 @@ const handleConfirmDelete = async () => {
   const endItem = Math.min(skip + limit, total);
 
   useEffect(() => {
+     if (!isAuthenticated) {
+    return;
+  }
     const controller = new AbortController();
 
     const fetchProducts = async () => {
@@ -170,7 +175,7 @@ const handleConfirmDelete = async () => {
     return () => {
       controller.abort();
     };
-  }, [page, limit, debouncedSearch, category, sort]);
+  }, [page, limit, debouncedSearch, category, sort, isAuthenticated]);
 
   useEffect(() => {
     if (category) {
@@ -198,6 +203,10 @@ const handleConfirmDelete = async () => {
   }, [debouncedSearch]);
 
   useEffect(() => {
+if (!isAuthenticated) {
+  return;
+}
+
     const params = new URLSearchParams(searchParams.toString());
 
     params.set("page", page);
@@ -231,6 +240,13 @@ const handleConfirmDelete = async () => {
 
   setCreatedProducts(savedProducts);
 }, []);
+
+if (checkingAuth) {
+  return <p>Checking authentication...</p>;
+}
+if (!isAuthenticated) {
+  return null;
+}
 
   return (
     <main>
