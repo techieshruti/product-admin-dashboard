@@ -1,36 +1,189 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Product Admin Dashboard
 
-## Getting Started
+A responsive Product Admin Dashboard built with Next.js, React, Tailwind CSS, Axios, and DummyJSON.
 
-First, run the development server:
+The application allows authenticated users to view, search, filter, sort, add, edit, and delete products through a responsive admin interface.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Live Demo
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Add your deployed Vercel/Netlify URL here.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## 📂 GitHub Repository
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+[GitHub repository](https://github.com/techieshruti/product-admin-dashboard)
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🛠️ Tech Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Next.js
+- React
+- JavaScript
+- Tailwind CSS
+- Axios
+- DummyJSON API
+- LocalStorage
+- Git & GitHub
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## ✨ Features
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Authentication
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Login using DummyJSON authentication API
+- Protected product routes
+- Access token stored in LocalStorage
+- Axios automatically attaches the token to API requests
+- Logout functionality
+- Login error handling
+- Duplicate login requests prevented
+
+### Product Dashboard
+
+- Responsive desktop table
+- Responsive mobile product cards
+- Product image, title, category, price, rating, and stock
+- Product details navigation
+- Recently added products section
+
+### Search
+
+- Product search using DummyJSON search API
+- Debounced search input
+- Search resets pagination to page 1
+- Search requests are cancelled when a newer request is made
+- Prevents older search results from replacing newer results
+
+### Filtering & Sorting
+
+- Category filtering
+- Sort by:
+  - Price
+  - Rating
+  - Title
+- Sorting order support
+
+### Pagination
+
+- Server-side pagination using `limit` and `skip`
+- Page navigation
+- Previous/Next controls
+- Page size options:
+  - 10
+  - 20
+  - 50
+- Displays the current item range and total number of products
+- Handles invalid URL page parameters safely
+
+### Product Details
+
+- Product information
+- Product images
+- Horizontal image scrolling for products with multiple images
+- Centered image display for products with a single image
+- Product description
+- Price and rating
+- Stock information
+- Customer reviews
+- Edit product navigation
+- Product Not Found state for invalid product IDs
+
+### Add Product
+
+- Product creation form
+- Form validation
+- Loading state
+- Success feedback
+- Duplicate submission prevention
+
+### Edit Product
+
+- Loads existing product information
+- Form validation
+- Update functionality
+- Loading state
+- Success feedback
+- Duplicate submission prevention
+
+### Delete Product
+
+- Delete confirmation modal
+- Delete API integration
+- UI update after deletion
+
+### UI States
+
+The application includes:
+
+- Loading states
+- Error states
+- Empty states
+- Retry functionality
+- Authentication checking state
+- Product Not Found state
+
+---
+
+## 🔗 API
+
+This project uses the DummyJSON API for authentication and product data.
+
+The API is used for:
+- Authentication
+- Product listing
+- Product search
+- Categories
+- Product details
+- Add, update, and delete operations
+
+## 🔐 Demo Login
+
+Use the following credentials to access the dashboard:
+
+```text
+Username: emilys
+Password: emilyspass
+
+## 📁 Project Structure
+
+```text
+src/
+├── app/
+│   ├── login/
+│   │   └── page.js
+│   │
+│   ├── products/
+│   │   ├── [id]/
+│   │   │   ├── edit/
+│   │   │   │   └── page.js
+│   │   │   ├── not-found.js
+│   │   │   └── page.js
+│   │   │
+│   │   ├── new/
+│   │   │   └── page.js
+│   │   │
+│   │   └── page.js
+│   │
+│   └── page.js
+│
+├── components/
+│   └── products/
+│       ├── DeleteModal.jsx
+│       ├── Pagination.jsx
+│       ├── ProductCard.jsx
+│       ├── ProductFilters.jsx
+│       ├── ProductForm.jsx
+│       ├── ProductTable.jsx
+│       └── RecentlyAddedProducts.jsx
+│
+├── hooks/
+│   ├── useAuth.js
+│   └── useDebounce.js
+│
+├── lib/
+│   └── axios.js
+│
+└── services/
+    ├── authApi.js
+    └── productApi.js
