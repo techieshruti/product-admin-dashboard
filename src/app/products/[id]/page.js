@@ -2,13 +2,19 @@
 
 import { useEffect, useState } from "react";
 import { getProductById } from "@/services/productApi";
+import useAuth from "@/hooks/useAuth";
 
 const ProductDetailsPage = ({ params }) => {
+  const { isAuthenticated, checkingAuth } = useAuth();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
+    if (!isAuthenticated) {
+    return;
+  }
+
     const fetchProduct = async () => {
       try {
         const { id } = await params;
@@ -43,7 +49,15 @@ const ProductDetailsPage = ({ params }) => {
     };
 
     fetchProduct();
-  }, [params]);
+  }, [params, isAuthenticated]);
+
+if (checkingAuth) {
+  return <p>Checking authentication...</p>;
+}
+
+if (!isAuthenticated) {
+  return null;
+}
 
   if (loading) {
     return <p>Loading product...</p>;
