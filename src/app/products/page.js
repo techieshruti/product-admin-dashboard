@@ -14,6 +14,9 @@ import Link from "next/link";
 import ProductTable from "@/components/products/ProductTable";
 import ProductCard from "@/components/products/ProductCard";
 import RecentlyAddedProducts from "@/components/products/RecentlyAddedProducts";
+import ProductFilters from "@/components/products/ProductFilters";
+import Pagination from "@/components/products/Pagination";
+import DeleteModal from "@/components/products/DeleteModal";
 
 const ProductPage = () => {
   const { isAuthenticated, checkingAuth } = useAuth();
@@ -279,54 +282,15 @@ const ProductPage = () => {
       <p>Product Admin Dashboard</p>
       <hr />
       <br />
-      {/* Search products: */}
-      <div>
-        <label htmlFor="search">Search products: </label>
-
-        <input
-          id="search"
-          type="text"
-          placeholder="Search products..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </div>
-      {/* Categories: */}
-      <div>
-        <label htmlFor="category">Category: </label>
-
-        <select
-          id="category"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-        >
-          <option value="">All Categories</option>
-
-          {categories.map((item) => (
-            <option key={item.slug} value={item.slug}>
-              {item.name}
-            </option>
-          ))}
-        </select>
-      </div>
-      {/* Sort */}
-      <div>
-        <label htmlFor="sort">Sort by: </label>
-
-        <select
-          id="sort"
-          value={sort}
-          onChange={(e) => setSort(e.target.value)}
-        >
-          <option value="">Default</option>
-          <option value="price-asc">Price: Low to High</option>
-          <option value="price-desc">Price: High to Low</option>
-          <option value="rating-asc">Rating: Low to High</option>
-          <option value="rating-desc">Rating: High to Low</option>
-          <option value="title-asc">Title: A to Z</option>
-          <option value="title-desc">Title: Z to A</option>
-        </select>
-      </div>
+      <ProductFilters
+  search={search}
+  setSearch={setSearch}
+  category={category}
+  setCategory={setCategory}
+  categories={categories}
+  sort={sort}
+  setSort={setSort}
+/>
       <br />
       <RecentlyAddedProducts
   createdProducts={createdProducts}
@@ -373,85 +337,25 @@ const ProductPage = () => {
           </div>
         )}
       </div>
-      <p>
-        Showing {startItem}–{endItem} of {total}
-      </p>
-      <div>
-        <button onClick={() => setPage(page - 1)} disabled={page === 1}>
-          Previous
-        </button>
 
-        <span>
-          {" "}
-          Page {page} of {totalPages}{" "}
-        </span>
+     {/* Pagination */}
 
-        <button
-          onClick={() => setPage(page + 1)}
-          disabled={page === totalPages}
-        >
-          Next
-        </button>
-      </div>
-
-      <div>
-        <label htmlFor="pageSize">Products per page: </label>
-
-        <select
-          id="pageSize"
-          value={limit}
-          onChange={(e) => {
-            setLimit(Number(e.target.value));
-            setPage(1);
-          }}
-        >
-          <option value="10">10</option>
-          <option value="20">20</option>
-          <option value="50">50</option>
-        </select>
-      </div>
-
-      {productToDelete && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: "white",
-              color: "black",
-              padding: "24px",
-              borderRadius: "8px",
-              minWidth: "300px",
-            }}
-          >
-            <h2>Delete Product?</h2>
-
-            <p>
-              Are you sure you want to delete{" "}
-              <strong>{productToDelete.title}</strong>?
-            </p>
-
-            <button type="button" onClick={() => setProductToDelete(null)}>
-              Cancel
-            </button>
-
-            <button type="button" onClick={handleConfirmDelete}>
-              Confirm Delete
-            </button>
-          </div>
-        </div>
-      )}
+     <Pagination
+  page={page}
+  totalPages={totalPages}
+  limit={limit}
+  startItem={startItem}
+  endItem={endItem}
+  total={total}
+  setPage={setPage}
+  setLimit={setLimit}
+/>
+{/* Delete Modal */}
+     <DeleteModal
+  product={productToDelete}
+  onCancel={() => setProductToDelete(null)}
+  onConfirm={handleConfirmDelete}
+/>
     </main>
   );
 };
