@@ -13,6 +13,7 @@ import useAuth from "@/hooks/useAuth";
 import Link from "next/link";
 import ProductTable from "@/components/products/ProductTable";
 import ProductCard from "@/components/products/ProductCard";
+import RecentlyAddedProducts from "@/components/products/RecentlyAddedProducts";
 
 const ProductPage = () => {
   const { isAuthenticated, checkingAuth } = useAuth();
@@ -327,29 +328,10 @@ const ProductPage = () => {
         </select>
       </div>
       <br />
-      {createdProducts.length > 0 && (
-        <section>
-          <h2>Recently Added Products</h2>
-          <br />
-
-          {createdProducts.map((product) => (
-            <div key={product.id}>
-              <Link href={`/products/${product.id}`}>
-                <h3>{product.title}</h3>
-              </Link>
-              <p>Category: {product.category}</p>
-              <p>Price: ${product.price}</p>
-              <p>Stock: {product.stock}</p>
-              <br />
-              <button type="button" onClick={() => handleDeleteClick(product)}>
-                Delete
-              </button>
-
-              <hr />
-            </div>
-          ))}
-        </section>
-      )}
+      <RecentlyAddedProducts
+  createdProducts={createdProducts}
+  handleDeleteClick={handleDeleteClick}
+/>
 
       <br />
       <div>
