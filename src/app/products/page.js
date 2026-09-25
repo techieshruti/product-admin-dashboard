@@ -368,16 +368,102 @@ if (!isAuthenticated) {
  : products.length === 0 ? (
   <p>No products found.</p>
 ) : (
-    products.map((product) => (
-      <div key={product.id}>
+      <div>
+  {/* Desktop: Table */}
+  <div className="hidden md:block">
+    <table className="w-full border-collapse border border-gray-300">
+      <thead>
+        <tr className="bg-gray-100">
+          <th className="border border-gray-300 p-3 text-left">Image</th>
+          <th className="border border-gray-300 p-3 text-left">Title</th>
+          <th className="border border-gray-300 p-3 text-left">
+            Category
+          </th>
+          <th className="border border-gray-300 p-3 text-left">
+            Price
+          </th>
+          <th className="border border-gray-300 p-3 text-left">
+            Rating
+          </th>
+          <th className="border border-gray-300 p-3 text-left">
+            Stock
+          </th>
+          <th className="border border-gray-300 p-3 text-left">
+            Action
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {products.map((product) => (
+          <tr key={product.id}>
+            <td className="border border-gray-300 p-3">
+              <img
+                src={product.thumbnail}
+                alt={product.title}
+                width="80"
+              />
+            </td>
+
+            <td className="border border-gray-300 p-3">
+              <Link
+                href={`/products/${product.id}`}
+                className="text-blue-600 hover:underline"
+              >
+                {product.title}
+              </Link>
+            </td>
+
+            <td className="border border-gray-300 p-3">
+              {product.category}
+            </td>
+
+            <td className="border border-gray-300 p-3">
+              ${product.price}
+            </td>
+
+            <td className="border border-gray-300 p-3">
+              {product.rating}
+            </td>
+
+            <td className="border border-gray-300 p-3">
+              {product.stock}
+            </td>
+
+            <td className="border border-gray-300 p-3">
+              <button
+                type="button"
+                onClick={() => handleDeleteClick(product)}
+                className="rounded bg-red-500 px-3 py-1 text-white"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  {/* Mobile: Cards */}
+  <div className="space-y-4 md:hidden">
+    {products.map((product) => (
+      <div
+        key={product.id}
+        className="rounded-lg border border-gray-300 p-4 shadow-sm"
+      >
         <img
           src={product.thumbnail}
           alt={product.title}
           width="100"
+          className="mb-3"
         />
 
-        <Link href={`/products/${product.id}`}>
-          <h3>{product.title}</h3>
+        <Link
+          href={`/products/${product.id}`}
+          className="text-lg font-semibold text-blue-600 hover:underline"
+        >
+          {product.title}
         </Link>
 
         <p>Category: {product.category}</p>
@@ -385,18 +471,17 @@ if (!isAuthenticated) {
         <p>Rating: {product.rating}</p>
         <p>Stock: {product.stock}</p>
 
-        <br />
-
         <button
           type="button"
           onClick={() => handleDeleteClick(product)}
+          className="mt-3 rounded bg-red-500 px-3 py-1 text-white"
         >
           Delete
         </button>
-
-        <hr />
       </div>
-    ))
+    ))}
+  </div>
+</div>
   )}
 </div>
       <p>
