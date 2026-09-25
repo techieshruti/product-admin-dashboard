@@ -167,7 +167,21 @@ const EditProductPage = ({ params }) => {
   };
 
   if (loading) {
-    return <p>Loading product...</p>;
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+        <div className="flex w-full max-w-sm flex-col items-center rounded-2xl border border-indigo-100 bg-white p-8 text-center shadow-sm">
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-indigo-600"></div>
+
+          <h2 className="mt-5 text-lg font-semibold text-gray-900">
+            Loading product
+          </h2>
+
+          <p className="mt-1 text-sm text-gray-500">
+            Please wait while we fetch the product details.
+          </p>
+        </div>
+      </main>
+    );
   }
 
   return (

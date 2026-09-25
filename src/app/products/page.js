@@ -280,8 +280,22 @@ useEffect(() => {
   }, []);
 
   if (checkingAuth) {
-    return <p>Checking authentication...</p>;
-  }
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+      <div className="flex w-full max-w-sm flex-col items-center rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-sm">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-indigo-600"></div>
+
+        <h2 className="mt-5 text-lg font-semibold text-gray-900">
+          Checking authentication
+        </h2>
+
+        <p className="mt-1 text-sm text-gray-500">
+          Please wait while we verify your session.
+        </p>
+      </div>
+    </main>
+  );
+}
   if (!isAuthenticated) {
     return null;
   }
@@ -342,22 +356,67 @@ useEffect(() => {
       />
       <div>
 
-        {loading ? (
-          <p>Loading products...</p>
-        ) : error ? (
-          <div>
-            <p>{error}</p>
+      {loading ? (
+  <div className="my-8 flex min-h-[220px] items-center justify-center rounded-2xl border border-indigo-100 bg-white shadow-sm">
+    <div className="flex flex-col items-center justify-center text-center">
+      <div className="h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-indigo-600"></div>
 
-            <button
-              type="button"
-              onClick={() => setRetryCount((count) => count + 1)}
-            >
-              Retry
-            </button>
-          </div>
-        ) : products.length === 0 ? (
-          <p>No products found.</p>
-        ) : (
+      <p className="mt-4 text-lg font-semibold text-gray-800">
+        Loading products...
+      </p>
+
+      <p className="mt-1 text-sm text-gray-500">
+        Please wait while we fetch your products.
+      </p>
+    </div>
+  </div>
+) : error ? (
+  <div className="my-8 flex min-h-[220px] items-center justify-center rounded-2xl border border-rose-200 bg-white p-6 shadow-sm">
+    <div className="flex max-w-md flex-col items-center text-center">
+
+      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-rose-100">
+        <span className="text-xl font-bold text-rose-600">
+          !
+        </span>
+      </div>
+
+      <h2 className="mt-4 text-lg font-bold text-gray-900">
+        Something went wrong
+      </h2>
+
+      <p className="mt-2 text-sm text-gray-500">
+        {error}
+      </p>
+
+      <button
+        type="button"
+        onClick={() => setRetryCount((count) => count + 1)}
+        className="mt-5 rounded-lg bg-indigo-600 px-5 py-2.5 font-semibold text-white shadow-sm transition hover:bg-indigo-700"
+      >
+        Try Again
+      </button>
+    </div>
+  </div>
+) : products.length === 0 ? (
+  <div className="my-8 flex min-h-[220px] items-center justify-center rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+    <div className="flex max-w-md flex-col items-center text-center">
+
+      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-indigo-50">
+        <span className="text-xl text-indigo-600">
+          ○
+        </span>
+      </div>
+
+      <h2 className="mt-4 text-lg font-bold text-gray-900">
+        No products found
+      </h2>
+
+      <p className="mt-2 text-sm text-gray-500">
+        We couldn't find any products matching your search or filters.
+      </p>
+    </div>
+  </div>
+) : (
           <div>
             {/* Desktop: Table */}
             <ProductTable

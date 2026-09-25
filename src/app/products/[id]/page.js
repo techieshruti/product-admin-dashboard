@@ -53,7 +53,21 @@ const ProductDetailsPage = ({ params }) => {
   }, [params, isAuthenticated]);
 
   if (checkingAuth) {
-    return <p>Checking authentication...</p>;
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+        <div className="flex w-full max-w-sm flex-col items-center rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-sm">
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-indigo-600"></div>
+
+          <h2 className="mt-5 text-lg font-semibold text-gray-900">
+            Checking authentication
+          </h2>
+
+          <p className="mt-1 text-sm text-gray-500">
+            Please wait while we verify your session.
+          </p>
+        </div>
+      </main>
+    );
   }
 
   if (!isAuthenticated) {
@@ -61,14 +75,47 @@ const ProductDetailsPage = ({ params }) => {
   }
 
   if (loading) {
-    return <p>Loading product...</p>;
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+        <div className="flex w-full max-w-sm flex-col items-center rounded-2xl border border-indigo-100 bg-white p-8 text-center shadow-sm">
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-indigo-600"></div>
+
+          <h2 className="mt-5 text-lg font-semibold text-gray-900">
+            Loading product
+          </h2>
+
+          <p className="mt-1 text-sm text-gray-500">
+            Please wait while we fetch the product details.
+          </p>
+        </div>
+      </main>
+    );
   }
 
   if (notFound || !product) {
     return (
-      <main>
-        <h1>Product Not Found</h1>
-        <p>Sorry, the product you are looking for does not exist.</p>
+      <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+        <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-sm">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-rose-100">
+            <span className="text-2xl font-bold text-rose-600">!</span>
+          </div>
+
+          <h1 className="mt-5 text-2xl font-bold text-gray-900">
+            Product Not Found
+          </h1>
+
+          <p className="mt-2 text-sm leading-6 text-gray-500">
+            Sorry, the product you are looking for does not exist or may have
+            been removed.
+          </p>
+
+          <Link
+            href="/products"
+            className="mt-6 inline-flex items-center rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700"
+          >
+            ← Back to Products
+          </Link>
+        </div>
       </main>
     );
   }
@@ -89,21 +136,37 @@ const ProductDetailsPage = ({ params }) => {
           <div className="grid gap-8 p-6 md:grid-cols-2 md:p-8">
             {/* Product Images */}
             <div>
-              <div className="rounded-xl border border-indigo-100 bg-white p-6 shadow-sm">
-                <div className="grid grid-cols-2 gap-4">
-                  {product.images?.map((image) => (
-                    <div
-                      key={image}
-                      className="flex h-48 items-center justify-center rounded-lg bg-gray-50 p-4"
-                    >
-                      <img
-                        src={image}
-                        alt={product.title}
-                        className="h-full w-full object-contain"
-                      />
+              <div className="rounded-xl border border-indigo-100 bg-white p-4 shadow-sm">
+                {product.images?.length > 1 ? (
+                  <>
+                    <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3">
+                      {product.images.map((image, index) => (
+                        <div
+                          key={image}
+                          className="flex h-64 min-w-full snap-center items-center justify-center rounded-lg bg-gray-50 p-4"
+                        >
+                          <img
+                            src={image}
+                            alt={`${product.title} ${index + 1}`}
+                            className="h-full w-full object-contain"
+                          />
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+
+                    <p className="mt-2 text-center text-xs text-gray-400">
+                      Swipe to view more images
+                    </p>
+                  </>
+                ) : (
+                  <div className="flex h-64 items-center justify-center rounded-lg bg-gray-50 p-4">
+                    <img
+                      src={product.images?.[0] || product.thumbnail}
+                      alt={product.title}
+                      className="h-full w-full object-contain"
+                    />
+                  </div>
+                )}
               </div>
             </div>
 

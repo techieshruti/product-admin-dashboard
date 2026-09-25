@@ -7,6 +7,7 @@ const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
   const router = useRouter();
 
   const handleSubmit = async (e) => {
@@ -16,6 +17,7 @@ const LoginPage = () => {
     }
 
     setIsSubmitting(true);
+    setError("");
     try {
       const response = await api.post("auth/login", { username, password });
       localStorage.setItem("accessToken", response.data.accessToken);
@@ -23,6 +25,7 @@ const LoginPage = () => {
       router.push("/products");
     } catch (error) {
       console.log("Login failed:", error);
+      setError("Invalid username or password. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -79,7 +82,11 @@ const LoginPage = () => {
               className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
             />
           </div>
-
+{error && (
+  <div className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+    {error}
+  </div>
+)}
           <button
             type="submit"
             disabled={isSubmitting}
