@@ -292,7 +292,9 @@ const handleConfirmDelete = async () => {
 <br/>
     {createdProducts.map((product) => (
       <div key={product.id}>
-        <h3>{product.title}</h3>
+       <Link href={`/products/${product.id}`}>
+  <h3>{product.title}</h3>
+</Link>
         <p>Category: {product.category}</p>
         <p>Price: ${product.price}</p>
         <p>Stock: {product.stock}</p>
@@ -316,7 +318,9 @@ const handleConfirmDelete = async () => {
         {products.map((product) => (
           <div key={product.id}>
             <img src={product.thumbnail} alt={product.title} width="100" />
-            <h2>{product.title}</h2>
+             <Link href={`/products/${product.id}`}>
+  <h3>{product.title}</h3>
+</Link>
             <p>Category: {product.category}</p>
             <p>Price: ${product.price}</p>
             <p>Rating: {product.rating}</p>
