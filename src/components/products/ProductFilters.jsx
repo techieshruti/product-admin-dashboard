@@ -8,10 +8,13 @@ const ProductFilters = ({
   setSort,
 }) => {
   return (
-    <div className="flex flex-col gap-4 md:flex-row md:items-end">
+    <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
       {/* Search */}
       <div className="flex flex-col">
-        <label htmlFor="search" className="mb-1 font-medium">
+        <label
+          htmlFor="search"
+          className="mb-2 text-md font-semibold text-gray-700"
+        >
           Search products
         </label>
 
@@ -21,13 +24,16 @@ const ProductFilters = ({
           placeholder="Search products..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="rounded border border-gray-300 px-3 py-2"
+          className="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
         />
       </div>
 
       {/* Category */}
       <div className="flex flex-col">
-        <label htmlFor="category" className="mb-1 font-medium">
+        <label
+          htmlFor="category"
+          className="mb-2 text-md font-semibold text-gray-700"
+        >
           Category
         </label>
 
@@ -35,7 +41,7 @@ const ProductFilters = ({
           id="category"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="rounded border border-gray-300 px-3 py-2"
+          className="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-gray-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
         >
           <option value="">All Categories</option>
 
@@ -49,7 +55,10 @@ const ProductFilters = ({
 
       {/* Sort */}
       <div className="flex flex-col">
-        <label htmlFor="sort" className="mb-1 font-medium">
+        <label
+          htmlFor="sort"
+          className="mb-2 text-md font-semibold text-gray-700"
+        >
           Sort by
         </label>
 
@@ -57,7 +66,7 @@ const ProductFilters = ({
           id="sort"
           value={sort}
           onChange={(e) => setSort(e.target.value)}
-          className="rounded border border-gray-300 px-3 py-2"
+          className="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-gray-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
         >
           <option value="">Default</option>
           <option value="price-asc">Price: Low to High</option>

@@ -1,28 +1,36 @@
+import Link from "next/link";
+
 const ProductTable = ({ products, handleDeleteClick }) => {
   return (
-    <div className="hidden md:block">
-      <table className="w-full border-collapse border border-gray-300">
+    <div className="hidden overflow-hidden rounded-xl border border-indigo-100 bg-white shadow-sm md:block">
+      <table className="w-full border-collapse">
         <thead>
-          <tr className="bg-gray-100 text-black">
-            <th className="border border-gray-300 p-3 text-left">
+          <tr className="bg-gradient-to-r from-indigo-50 to-violet-50 text-gray-800">
+            <th className="border-b border-indigo-100 p-4 text-left text-sm font-semibold">
               Image
             </th>
-            <th className="border border-gray-300 p-3 text-left">
+
+            <th className="border-b border-indigo-100 p-4 text-left text-sm font-semibold">
               Title
             </th>
-            <th className="border border-gray-300 p-3 text-left">
+
+            <th className="border-b border-indigo-100 p-4 text-left text-sm font-semibold">
               Category
             </th>
-            <th className="border border-gray-300 p-3 text-left">
+
+            <th className="border-b border-indigo-100 p-4 text-left text-sm font-semibold">
               Price
             </th>
-            <th className="border border-gray-300 p-3 text-left">
+
+            <th className="border-b border-indigo-100 p-4 text-left text-sm font-semibold">
               Rating
             </th>
-            <th className="border border-gray-300 p-3 text-left">
+
+            <th className="border-b border-indigo-100 p-4 text-left text-sm font-semibold">
               Stock
             </th>
-            <th className="border border-gray-300 p-3 text-left">
+
+            <th className="border-b border-indigo-100 p-4 text-left text-sm font-semibold">
               Action
             </th>
           </tr>
@@ -30,45 +38,46 @@ const ProductTable = ({ products, handleDeleteClick }) => {
 
         <tbody>
           {products.map((product) => (
-            <tr key={product.id}>
-              <td className="border border-gray-300 p-3">
+            <tr key={product.id} className="transition hover:bg-indigo-50/40">
+              <td className="border-b border-gray-100 p-4">
                 <img
                   src={product.thumbnail}
                   alt={product.title}
-                  width="80"
+                  width="70"
+                  className="h-16 w-16 rounded-lg object-contain"
                 />
               </td>
 
-              <td className="border border-gray-300 p-3">
-                <a
+              <td className="border-b border-gray-100 p-4">
+                <Link
                   href={`/products/${product.id}`}
-                  className="text-blue-600 hover:underline"
+                  className="font-semibold text-indigo-600 transition hover:text-violet-600 hover:underline"
                 >
                   {product.title}
-                </a>
+                </Link>
               </td>
 
-              <td className="border border-gray-300 text-black p-3">
+              <td className="border-b border-gray-100 p-4 text-sm text-gray-600">
                 {product.category}
               </td>
 
-              <td className="border border-gray-300 p-3 text-black">
+              <td className="border-b border-gray-100 p-4 font-medium text-gray-900">
                 ${product.price}
               </td>
 
-              <td className="border border-gray-300 p-3 text-black">
-                {product.rating}
+              <td className="border-b border-gray-100 p-4 text-sm text-gray-700">
+                ⭐ {product.rating}
               </td>
 
-              <td className="border border-gray-300 p-3 text-black">
+              <td className="border-b border-gray-100 p-4 text-sm font-medium text-gray-700">
                 {product.stock}
               </td>
 
-              <td className="border border-gray-300 p-3">
+              <td className="border-b border-gray-100 p-4">
                 <button
                   type="button"
                   onClick={() => handleDeleteClick(product)}
-                  className="rounded bg-red-600 px-3 py-1 text-white cursor-pointer hover:bg-red-700"
+                  className="rounded-lg bg-rose-600 px-3.5 py-2 text-sm font-semibold text-white transition hover:bg-rose-700"
                 >
                   Delete
                 </button>
