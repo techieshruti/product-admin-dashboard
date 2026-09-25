@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { addProduct } from "@/services/productApi";
 import useAuth from "@/hooks/useAuth";
+import ProductForm from "@/components/products/ProductForm";
 
 const NewProductPage = () => {
   const { isAuthenticated, checkingAuth } = useAuth();
@@ -16,6 +17,15 @@ const NewProductPage = () => {
   const [errors, setErrors] = useState({});
 const [isSubmitting, setIsSubmitting] = useState(false);
 const [successMessage, setSuccessMessage] = useState("");
+
+const handleChange = (e) => {
+  const { name, value } = e.target;
+
+  setFormData((current) => ({
+    ...current,
+    [name]: value,
+  }));
+};
 
   const handleSubmit = async (e) => {
   e.preventDefault();
@@ -98,93 +108,19 @@ if (!isAuthenticated) {
 }
 
   return (
-    <main>
-      <h1>Add New Product</h1>
-      {successMessage && <p>{successMessage}</p>}
-      <form onSubmit={handleSubmit}>
-  <div>
-    <label htmlFor="title">Title:</label>
-    <input
-      id="title"
-      type="text"
-      value={formData.title}
-      onChange={(e) =>
-        setFormData({
-          ...formData,
-          title: e.target.value,
-        })
-      }
-    />
-    {errors.title && <p>{errors.title}</p>}
-  </div>
-
-  <div>
-    <label htmlFor="description">Description:</label>
-    <textarea
-      id="description"
-      value={formData.description}
-      onChange={(e) =>
-        setFormData({
-          ...formData,
-          description: e.target.value,
-        })
-      }
-    />
-    {errors.description && <p>{errors.description}</p>}
-  </div>
-
-  <div>
-    <label htmlFor="price">Price:</label>
-    <input
-      id="price"
-      type="number"
-      value={formData.price}
-      onChange={(e) =>
-        setFormData({
-          ...formData,
-          price: e.target.value,
-        })
-      }
-    />
-    {errors.price && <p>{errors.price}</p>}
-  </div>
-
-  <div>
-    <label htmlFor="stock">Stock:</label>
-    <input
-      id="stock"
-      type="number"
-      value={formData.stock}
-      onChange={(e) =>
-        setFormData({
-          ...formData,
-          stock: e.target.value,
-        })
-      }
-    />
-    {errors.stock && <p>{errors.stock}</p>}
-  </div>
-
-  <div>
-    <label htmlFor="category">Category:</label>
-    <input
-      id="category"
-      type="text"
-      value={formData.category}
-      onChange={(e) =>
-        setFormData({
-          ...formData,
-          category: e.target.value,
-        })
-      }
-    />
-    {errors.category && <p>{errors.category}</p>}
-  </div>
-
- <button type="submit" disabled={isSubmitting}>
-  {isSubmitting ? "Saving..." : "Save Product"}
-</button>
-</form>
+    <main className="min-h-screen bg-gray-100 p-6">
+     <h1 className="mb-6 text-2xl font-bold text-gray-950">
+  Add New Product
+</h1>
+<ProductForm
+  formData={formData}
+  errors={errors}
+  isSubmitting={isSubmitting}
+  successMessage={successMessage}
+  onChange={handleChange}
+  onSubmit={handleSubmit}
+  buttonText="Save Product"
+/>
     </main>
   );
 };
