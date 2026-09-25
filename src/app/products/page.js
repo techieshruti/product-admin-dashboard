@@ -28,6 +28,9 @@ const ProductPage = () => {
   const [sort, setSort] = useState(initialSort);
   const [createdProducts, setCreatedProducts] = useState([]);
   const [productToDelete, setProductToDelete] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+const [retryCount, setRetryCount] = useState(0);
 
 const handleLogout = () => {
   localStorage.removeItem("accessToken");
@@ -126,6 +129,9 @@ const handleConfirmDelete = async () => {
 
     const fetchProducts = async () => {
       try {
+        
+    setLoading(true);
+     setError("");
         let response;
         let sortBy = "";
         let order = "";
@@ -170,8 +176,11 @@ const handleConfirmDelete = async () => {
           return;
         }
 
-        console.error("Failed to fetch products:", error);
+        setError("Failed to load products. Please try again.");
       }
+      finally {
+    setLoading(false);
+  }
     };
 
     fetchProducts();
@@ -180,7 +189,7 @@ const handleConfirmDelete = async () => {
     return () => {
       controller.abort();
     };
-  }, [page, limit, debouncedSearch, category, sort, isAuthenticated]);
+  }, [page, limit, debouncedSearch, category, sort, isAuthenticated, retryCount]);
 
   useEffect(() => {
     if (category) {
@@ -314,6 +323,7 @@ if (!isAuthenticated) {
   <section>
     <h2>Recently Added Products</h2>
 <br/>
+
     {createdProducts.map((product) => (
       <div key={product.id}>
        <Link href={`/products/${product.id}`}>
@@ -338,27 +348,57 @@ if (!isAuthenticated) {
 
 <br />
       <div>
-        <br />
-        {products.map((product) => (
-          <div key={product.id}>
-            <img src={product.thumbnail} alt={product.title} width="100" />
-             <Link href={`/products/${product.id}`}>
-  <h3>{product.title}</h3>
-</Link>
-            <p>Category: {product.category}</p>
-            <p>Price: ${product.price}</p>
-            <p>Rating: {product.rating}</p>
-            <p>Stock: {product.stock}</p>
+  <br />
 
-            <br />
-              <button type="button" onClick={() => handleDeleteClick(product)}>
-  Delete
-</button>
-            <hr />
-          
-          </div>
-        ))}
+ {loading ? (
+  <p>Loading products...</p>
+)
+: error ? (
+  <div>
+    <p>{error}</p>
+
+    <button
+      type="button"
+      onClick={() => setRetryCount((count) => count + 1)}
+    >
+      Retry
+    </button>
+  </div>
+)
+ : products.length === 0 ? (
+  <p>No products found.</p>
+) : (
+    products.map((product) => (
+      <div key={product.id}>
+        <img
+          src={product.thumbnail}
+          alt={product.title}
+          width="100"
+        />
+
+        <Link href={`/products/${product.id}`}>
+          <h3>{product.title}</h3>
+        </Link>
+
+        <p>Category: {product.category}</p>
+        <p>Price: ${product.price}</p>
+        <p>Rating: {product.rating}</p>
+        <p>Stock: {product.stock}</p>
+
+        <br />
+
+        <button
+          type="button"
+          onClick={() => handleDeleteClick(product)}
+        >
+          Delete
+        </button>
+
+        <hr />
       </div>
+    ))
+  )}
+</div>
       <p>
         Showing {startItem}–{endItem} of {total}
       </p>
