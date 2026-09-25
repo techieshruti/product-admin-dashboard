@@ -5,6 +5,7 @@ import {
   searchProducts,
   getCategories,
   getProductsByCategory,
+  deleteProduct,
 } from "@/services/productApi";
 import { useRouter, useSearchParams } from "next/navigation";
 import useDebounce from "@/hooks/useDebounce";
@@ -24,6 +25,71 @@ const ProductPage = () => {
   const [category, setCategory] = useState(initialCategory);
   const [sort, setSort] = useState(initialSort);
   const [createdProducts, setCreatedProducts] = useState([]);
+  const [productToDelete, setProductToDelete] = useState(null);
+
+const handleDeleteClick = (product) => {
+  setProductToDelete(product);
+};
+
+const handleConfirmDelete = async () => {
+  if (!productToDelete) {
+    return;
+  }
+
+  try {
+    const productId = productToDelete.id;
+
+    const savedProducts = JSON.parse(
+      localStorage.getItem("createdProducts") || "[]"
+    );
+
+    const isLocalProduct = savedProducts.some(
+      (product) => String(product.id) === String(productId)
+    );
+
+    if (isLocalProduct) {
+      // Product was created by our app.
+      // DummyJSON does not actually contain it, so delete it locally.
+      const updatedProducts = savedProducts.filter(
+        (product) => String(product.id) !== String(productId)
+      );
+
+      localStorage.setItem(
+        "createdProducts",
+        JSON.stringify(updatedProducts)
+      );
+
+      setCreatedProducts(updatedProducts);
+
+      console.log("Product deleted:", productToDelete);
+    } else {
+      // Product came from DummyJSON.
+      const response = await deleteProduct(productId);
+
+      console.log("Product deleted:", response.data);
+
+      // Keep a local record of the deletion.
+      const updatedProducts = savedProducts.filter(
+        (product) => String(product.id) !== String(productId)
+      );
+
+      localStorage.setItem(
+        "createdProducts",
+        JSON.stringify(updatedProducts)
+      );
+
+      setProducts((currentProducts) =>
+        currentProducts.filter(
+          (product) => String(product.id) !== String(productId)
+        )
+      );
+    }
+
+    setProductToDelete(null);
+  } catch (error) {
+    console.error("Failed to delete product:", error);
+  }
+};
 
   const debouncedSearch = useDebounce(search, 500);
 
@@ -230,6 +296,15 @@ const ProductPage = () => {
         <p>Category: {product.category}</p>
         <p>Price: ${product.price}</p>
         <p>Stock: {product.stock}</p>
+        <br/>
+        <button
+      type="button"
+      onClick={() => handleDeleteClick(product)}
+    >
+      Delete
+    </button>
+
+    <hr />
       </div>
     ))}
   </section>
@@ -248,7 +323,11 @@ const ProductPage = () => {
             <p>Stock: {product.stock}</p>
 
             <br />
+              <button type="button" onClick={() => handleDeleteClick(product)}>
+  Delete
+</button>
             <hr />
+          
           </div>
         ))}
       </div>
@@ -289,6 +368,52 @@ const ProductPage = () => {
           <option value="50">50</option>
         </select>
       </div>
+
+{productToDelete && (
+  <div
+    style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      zIndex: 1000,
+    }}
+  >
+    <div
+      style={{
+        backgroundColor: "white",
+        color: "black",
+        padding: "24px",
+        borderRadius: "8px",
+        minWidth: "300px",
+      }}
+    >
+      <h2>Delete Product?</h2>
+
+      <p>
+        Are you sure you want to delete{" "}
+        <strong>{productToDelete.title}</strong>?
+      </p>
+
+      <button
+        type="button"
+        onClick={() => setProductToDelete(null)}
+      >
+        Cancel
+      </button>
+
+      <button type="button" onClick={handleConfirmDelete}>
+        Confirm Delete
+      </button>
+    </div>
+  </div>
+)}
+
     </main>
   );
 };

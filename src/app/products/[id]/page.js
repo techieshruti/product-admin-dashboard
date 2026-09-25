@@ -18,6 +18,10 @@ const ProductDetailsPage = async ({ params }) => {
     throw error;
   }
 
+  const handleDeleteClick = (product) => {
+  console.log("Delete clicked:", product);
+};
+
   return (
     <main>
       <h1>{product.title}</h1>

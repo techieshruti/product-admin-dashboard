@@ -64,3 +64,9 @@ export const addProduct = (productData) => {
 export const updateProduct = (id, productData) => {
   return api.put(`/products/${id}`, productData);
 };
+
+// ==========================================
+
+export const deleteProduct = (id) => {
+  return api.delete(`/products/${id}`);
+};
