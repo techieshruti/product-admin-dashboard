@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { addProduct } from "@/services/productApi";
+import useAuth from "@/hooks/useAuth";
 
 const NewProductPage = () => {
+  const { isAuthenticated, checkingAuth } = useAuth();
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -86,6 +88,14 @@ finally {
   setIsSubmitting(false);
 }
 };
+
+if (checkingAuth) {
+  return <p>Checking authentication...</p>;
+}
+
+if (!isAuthenticated) {
+  return null;
+}
 
   return (
     <main>
