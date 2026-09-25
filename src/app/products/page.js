@@ -11,6 +11,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import useDebounce from "@/hooks/useDebounce";
 import useAuth from "@/hooks/useAuth";
 import Link from "next/link";
+import ProductTable from "@/components/products/ProductTable";
+import ProductCard from "@/components/products/ProductCard";
 
 const ProductPage = () => {
   const { isAuthenticated, checkingAuth } = useAuth();
@@ -30,76 +32,76 @@ const ProductPage = () => {
   const [productToDelete, setProductToDelete] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-const [retryCount, setRetryCount] = useState(0);
+  const [retryCount, setRetryCount] = useState(0);
 
-const handleLogout = () => {
-  localStorage.removeItem("accessToken");
-  router.replace("/login");
-};
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    router.replace("/login");
+  };
 
-const handleDeleteClick = (product) => {
-  setProductToDelete(product);
-};
+  const handleDeleteClick = (product) => {
+    setProductToDelete(product);
+  };
 
-const handleConfirmDelete = async () => {
-  if (!productToDelete) {
-    return;
-  }
-
-  try {
-    const productId = productToDelete.id;
-
-    const savedProducts = JSON.parse(
-      localStorage.getItem("createdProducts") || "[]"
-    );
-
-    const isLocalProduct = savedProducts.some(
-      (product) => String(product.id) === String(productId)
-    );
-
-    if (isLocalProduct) {
-      // Product was created by our app.
-      // DummyJSON does not actually contain it, so delete it locally.
-      const updatedProducts = savedProducts.filter(
-        (product) => String(product.id) !== String(productId)
-      );
-
-      localStorage.setItem(
-        "createdProducts",
-        JSON.stringify(updatedProducts)
-      );
-
-      setCreatedProducts(updatedProducts);
-
-      console.log("Product deleted:", productToDelete);
-    } else {
-      // Product came from DummyJSON.
-      const response = await deleteProduct(productId);
-
-      console.log("Product deleted:", response.data);
-
-      // Keep a local record of the deletion.
-      const updatedProducts = savedProducts.filter(
-        (product) => String(product.id) !== String(productId)
-      );
-
-      localStorage.setItem(
-        "createdProducts",
-        JSON.stringify(updatedProducts)
-      );
-
-      setProducts((currentProducts) =>
-        currentProducts.filter(
-          (product) => String(product.id) !== String(productId)
-        )
-      );
+  const handleConfirmDelete = async () => {
+    if (!productToDelete) {
+      return;
     }
 
-    setProductToDelete(null);
-  } catch (error) {
-    console.error("Failed to delete product:", error);
-  }
-};
+    try {
+      const productId = productToDelete.id;
+
+      const savedProducts = JSON.parse(
+        localStorage.getItem("createdProducts") || "[]",
+      );
+
+      const isLocalProduct = savedProducts.some(
+        (product) => String(product.id) === String(productId),
+      );
+
+      if (isLocalProduct) {
+        // Product was created by our app.
+        // DummyJSON does not actually contain it, so delete it locally.
+        const updatedProducts = savedProducts.filter(
+          (product) => String(product.id) !== String(productId),
+        );
+
+        localStorage.setItem(
+          "createdProducts",
+          JSON.stringify(updatedProducts),
+        );
+
+        setCreatedProducts(updatedProducts);
+
+        console.log("Product deleted:", productToDelete);
+      } else {
+        // Product came from DummyJSON.
+        const response = await deleteProduct(productId);
+
+        console.log("Product deleted:", response.data);
+
+        // Keep a local record of the deletion.
+        const updatedProducts = savedProducts.filter(
+          (product) => String(product.id) !== String(productId),
+        );
+
+        localStorage.setItem(
+          "createdProducts",
+          JSON.stringify(updatedProducts),
+        );
+
+        setProducts((currentProducts) =>
+          currentProducts.filter(
+            (product) => String(product.id) !== String(productId),
+          ),
+        );
+      }
+
+      setProductToDelete(null);
+    } catch (error) {
+      console.error("Failed to delete product:", error);
+    }
+  };
 
   const debouncedSearch = useDebounce(search, 500);
 
@@ -122,16 +124,15 @@ const handleConfirmDelete = async () => {
   const endItem = Math.min(skip + limit, total);
 
   useEffect(() => {
-     if (!isAuthenticated) {
-    return;
-  }
+    if (!isAuthenticated) {
+      return;
+    }
     const controller = new AbortController();
 
     const fetchProducts = async () => {
       try {
-        
-    setLoading(true);
-     setError("");
+        setLoading(true);
+        setError("");
         let response;
         let sortBy = "";
         let order = "";
@@ -177,10 +178,9 @@ const handleConfirmDelete = async () => {
         }
 
         setError("Failed to load products. Please try again.");
+      } finally {
+        setLoading(false);
       }
-      finally {
-    setLoading(false);
-  }
     };
 
     fetchProducts();
@@ -189,7 +189,15 @@ const handleConfirmDelete = async () => {
     return () => {
       controller.abort();
     };
-  }, [page, limit, debouncedSearch, category, sort, isAuthenticated, retryCount]);
+  }, [
+    page,
+    limit,
+    debouncedSearch,
+    category,
+    sort,
+    isAuthenticated,
+    retryCount,
+  ]);
 
   useEffect(() => {
     if (category) {
@@ -217,9 +225,9 @@ const handleConfirmDelete = async () => {
   }, [debouncedSearch]);
 
   useEffect(() => {
-if (!isAuthenticated) {
-  return;
-}
+    if (!isAuthenticated) {
+      return;
+    }
 
     const params = new URLSearchParams(searchParams.toString());
 
@@ -239,34 +247,34 @@ if (!isAuthenticated) {
     }
 
     if (sort) {
-  params.set("sort", sort);
-} else {
-  params.delete("sort");
-}
+      params.set("sort", sort);
+    } else {
+      params.delete("sort");
+    }
 
     router.replace(`/products?${params.toString()}`);
   }, [page, limit, search, category, sort]);
 
   useEffect(() => {
-  const savedProducts = JSON.parse(
-    localStorage.getItem("createdProducts") || "[]"
-  );
+    const savedProducts = JSON.parse(
+      localStorage.getItem("createdProducts") || "[]",
+    );
 
-  setCreatedProducts(savedProducts);
-}, []);
+    setCreatedProducts(savedProducts);
+  }, []);
 
-if (checkingAuth) {
-  return <p>Checking authentication...</p>;
-}
-if (!isAuthenticated) {
-  return null;
-}
+  if (checkingAuth) {
+    return <p>Checking authentication...</p>;
+  }
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <main>
       <button type="button" onClick={handleLogout}>
-  Logout
-</button>
+        Logout
+      </button>
       <p>Product Admin Dashboard</p>
       <hr />
       <br />
@@ -318,172 +326,71 @@ if (!isAuthenticated) {
           <option value="title-desc">Title: Z to A</option>
         </select>
       </div>
-<br />
-{createdProducts.length > 0 && (
-  <section>
-    <h2>Recently Added Products</h2>
-<br/>
+      <br />
+      {createdProducts.length > 0 && (
+        <section>
+          <h2>Recently Added Products</h2>
+          <br />
 
-    {createdProducts.map((product) => (
-      <div key={product.id}>
-       <Link href={`/products/${product.id}`}>
-  <h3>{product.title}</h3>
-</Link>
-        <p>Category: {product.category}</p>
-        <p>Price: ${product.price}</p>
-        <p>Stock: {product.stock}</p>
-        <br/>
-        <button
-      type="button"
-      onClick={() => handleDeleteClick(product)}
-    >
-      Delete
-    </button>
-
-    <hr />
-      </div>
-    ))}
-  </section>
-)}
-
-<br />
-      <div>
-  <br />
-
- {loading ? (
-  <p>Loading products...</p>
-)
-: error ? (
-  <div>
-    <p>{error}</p>
-
-    <button
-      type="button"
-      onClick={() => setRetryCount((count) => count + 1)}
-    >
-      Retry
-    </button>
-  </div>
-)
- : products.length === 0 ? (
-  <p>No products found.</p>
-) : (
-      <div>
-  {/* Desktop: Table */}
-  <div className="hidden md:block">
-    <table className="w-full border-collapse border border-gray-300">
-      <thead>
-        <tr className="bg-gray-100">
-          <th className="border border-gray-300 p-3 text-left">Image</th>
-          <th className="border border-gray-300 p-3 text-left">Title</th>
-          <th className="border border-gray-300 p-3 text-left">
-            Category
-          </th>
-          <th className="border border-gray-300 p-3 text-left">
-            Price
-          </th>
-          <th className="border border-gray-300 p-3 text-left">
-            Rating
-          </th>
-          <th className="border border-gray-300 p-3 text-left">
-            Stock
-          </th>
-          <th className="border border-gray-300 p-3 text-left">
-            Action
-          </th>
-        </tr>
-      </thead>
-
-      <tbody>
-        {products.map((product) => (
-          <tr key={product.id}>
-            <td className="border border-gray-300 p-3">
-              <img
-                src={product.thumbnail}
-                alt={product.title}
-                width="80"
-              />
-            </td>
-
-            <td className="border border-gray-300 p-3">
-              <Link
-                href={`/products/${product.id}`}
-                className="text-blue-600 hover:underline"
-              >
-                {product.title}
+          {createdProducts.map((product) => (
+            <div key={product.id}>
+              <Link href={`/products/${product.id}`}>
+                <h3>{product.title}</h3>
               </Link>
-            </td>
-
-            <td className="border border-gray-300 p-3">
-              {product.category}
-            </td>
-
-            <td className="border border-gray-300 p-3">
-              ${product.price}
-            </td>
-
-            <td className="border border-gray-300 p-3">
-              {product.rating}
-            </td>
-
-            <td className="border border-gray-300 p-3">
-              {product.stock}
-            </td>
-
-            <td className="border border-gray-300 p-3">
-              <button
-                type="button"
-                onClick={() => handleDeleteClick(product)}
-                className="rounded bg-red-500 px-3 py-1 text-white"
-              >
+              <p>Category: {product.category}</p>
+              <p>Price: ${product.price}</p>
+              <p>Stock: {product.stock}</p>
+              <br />
+              <button type="button" onClick={() => handleDeleteClick(product)}>
                 Delete
               </button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
 
-  {/* Mobile: Cards */}
-  <div className="space-y-4 md:hidden">
-    {products.map((product) => (
-      <div
-        key={product.id}
-        className="rounded-lg border border-gray-300 p-4 shadow-sm"
-      >
-        <img
-          src={product.thumbnail}
-          alt={product.title}
-          width="100"
-          className="mb-3"
-        />
+              <hr />
+            </div>
+          ))}
+        </section>
+      )}
 
-        <Link
-          href={`/products/${product.id}`}
-          className="text-lg font-semibold text-blue-600 hover:underline"
-        >
-          {product.title}
-        </Link>
+      <br />
+      <div>
+        <br />
 
-        <p>Category: {product.category}</p>
-        <p>Price: ${product.price}</p>
-        <p>Rating: {product.rating}</p>
-        <p>Stock: {product.stock}</p>
+        {loading ? (
+          <p>Loading products...</p>
+        ) : error ? (
+          <div>
+            <p>{error}</p>
 
-        <button
-          type="button"
-          onClick={() => handleDeleteClick(product)}
-          className="mt-3 rounded bg-red-500 px-3 py-1 text-white"
-        >
-          Delete
-        </button>
+            <button
+              type="button"
+              onClick={() => setRetryCount((count) => count + 1)}
+            >
+              Retry
+            </button>
+          </div>
+        ) : products.length === 0 ? (
+          <p>No products found.</p>
+        ) : (
+          <div>
+            {/* Desktop: Table */}
+            <ProductTable
+  products={products}
+  handleDeleteClick={handleDeleteClick}
+/>
+
+            {/* Mobile: Cards */}
+            <div className="space-y-4 md:hidden">
+  {products.map((product) => (
+    <ProductCard
+      key={product.id}
+      product={product}
+      handleDeleteClick={handleDeleteClick}
+    />
+  ))}
+</div>
+          </div>
+        )}
       </div>
-    ))}
-  </div>
-</div>
-  )}
-</div>
       <p>
         Showing {startItem}–{endItem} of {total}
       </p>
@@ -522,51 +429,47 @@ if (!isAuthenticated) {
         </select>
       </div>
 
-{productToDelete && (
-  <div
-    style={{
-      position: "fixed",
-      top: 0,
-      left: 0,
-      width: "100%",
-      height: "100%",
-      backgroundColor: "rgba(0, 0, 0, 0.5)",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      zIndex: 1000,
-    }}
-  >
-    <div
-      style={{
-        backgroundColor: "white",
-        color: "black",
-        padding: "24px",
-        borderRadius: "8px",
-        minWidth: "300px",
-      }}
-    >
-      <h2>Delete Product?</h2>
+      {productToDelete && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "white",
+              color: "black",
+              padding: "24px",
+              borderRadius: "8px",
+              minWidth: "300px",
+            }}
+          >
+            <h2>Delete Product?</h2>
 
-      <p>
-        Are you sure you want to delete{" "}
-        <strong>{productToDelete.title}</strong>?
-      </p>
+            <p>
+              Are you sure you want to delete{" "}
+              <strong>{productToDelete.title}</strong>?
+            </p>
 
-      <button
-        type="button"
-        onClick={() => setProductToDelete(null)}
-      >
-        Cancel
-      </button>
+            <button type="button" onClick={() => setProductToDelete(null)}>
+              Cancel
+            </button>
 
-      <button type="button" onClick={handleConfirmDelete}>
-        Confirm Delete
-      </button>
-    </div>
-  </div>
-)}
-
+            <button type="button" onClick={handleConfirmDelete}>
+              Confirm Delete
+            </button>
+          </div>
+        </div>
+      )}
     </main>
   );
 };
